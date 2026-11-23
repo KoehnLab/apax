@@ -258,7 +258,9 @@ def calc_loss(params, inputs, labels, loss_fn, model):
         inputs["box"],
         inputs["offsets"],
     )
+    #print("\nIN calc_loss") #DEBUG
     predictions = model(params, R, Z, idx, box, offsets)
+    #print("predictions: \n",predictions) #DEBUG
     loss = loss_fn(inputs, predictions, labels)
     return loss, predictions
 
@@ -362,8 +364,11 @@ def make_step_fns(
         params, batch, batch_metrics
     ) -> Union[tuple[float, metrics.Collection], tuple[float, metrics.Collection, Any]]:
         inputs, labels = batch
+        #print("\nIN val_step") #DEBUG
+        #print("\ninputs: ",inputs) #DEBUG
+        #print("params: ",params) #DEBUG
+        #print("labels: ",labels) #DEBUG
         loss, predictions = eval_fn(params, inputs, labels)
-
         new_batch_metrics = Metrics.single_from_model_output(
             inputs=inputs, label=labels, prediction=predictions
         )

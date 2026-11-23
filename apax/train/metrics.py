@@ -40,8 +40,11 @@ def mse_fn(
     """
     Computes the Mean Squared Error of two arrays.
     """
+    #print("\nIN mse_fn\n")#DEBUG
+    #import jax #DEBUG
+    #jax.debug.print("\nlabel[g_tensor]: \n{}",label["g_tensor"])#DEBUG
+    #jax.debug.print("\nprediction[g_tensor]: \n{}",prediction["g_tensor"])#DEBUG
     return jnp.mean((label[key] - prediction[key]) ** 2)
-
 
 def cosine_sim(
     inputs: dict, label: dict[jnp.array], prediction: dict[jnp.array], key: str

@@ -104,6 +104,8 @@ class CSVLoggerApax(CSVLogger):
             )
             if self.append_header:
                 self.writer.writeheader()
+        #print("\nIN CSVLoggerApax") #DEBUG
+        #print("\nsef.keys(): \n",self.keys()) #DEBUG
 
         row_dict = collections.OrderedDict({"epoch": epoch})
         row_dict.update((key, handle_value(logs.get(key, "NA"))) for key in self.keys)

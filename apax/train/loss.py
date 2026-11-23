@@ -21,6 +21,9 @@ def weighted_squared_error(
     Squared error function that allows weighting of
     individual contributions by the number of atoms in the system.
     """
+    #print("IN weighted_squared_error") #DEBUG
+    #print("\nlabel:\n",label) #DEBUG
+    #print("prediction:\n",prediction) #DEBUG
     label, prediction = label[name], prediction[name]
     return (label - prediction) ** 2
 

@@ -146,16 +146,21 @@ def atoms_to_labels(
     labels :
         Labels are trainable system properties.
     """
+    #print("\nIN atoms_to_labels")#DEBUG
 
     labels = {}
 
     property_names = [p[0] for p in additional_properties]
+    #print("\nproperty_names:\n",property_names)#DEBUG
+    #print("labels.keys() at beginning for key: ",labels.keys())#DEBUG
     for key in property_names:
+    #    print("key:",key) #DEBUG
         if key not in labels.keys():
             placeholder = {key: []}
             labels.update(placeholder)
-
+    #print("labels.keys(): at the end for key",labels.keys())#DEBUG
     common_keys = set(atoms_list[0].calc.results.keys())
+    #print("\ncommon_keys:\n",common_keys)#DEBUG
     for atoms in atoms_list[1:]:
         common_keys &= set(atoms.calc.results.keys())
     log.info(f"Labels found in the dataset: {common_keys}")
@@ -184,7 +189,7 @@ def atoms_to_labels(
                 if len(val.shape) == 1 and val.shape[0] != 1:
                     val = val[:, None]
                 labels[key].append(val)
-
+    #print("\nlabels:\n",labels) #DEBUG
     labels = prune_dict(labels)
     return labels
 

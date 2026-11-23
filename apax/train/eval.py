@@ -106,7 +106,7 @@ def predict(model, params, Metrics, loss_fn, test_ds, callbacks, is_ensemble=Fal
     is_ensemble : bool, default = False
         Whether the model is an ensemble.
     """
-
+    #print("\nIN predict") #DEBUG
     callbacks.on_train_begin()
     _, test_step_fn = make_step_fns(
         loss_fn, Metrics, model=model, is_ensemble=is_ensemble
@@ -121,6 +121,7 @@ def predict(model, params, Metrics, loss_fn, test_ds, callbacks, is_ensemble=Fal
     )
     for batch_idx in range(test_ds.n_data):
         batch = next(batch_test_ds)
+    #    print("\nbatch: \n",batch) #DEBUG
         batch_start_time = time.time()
 
         batch_loss, test_metrics = test_step_fn(params, batch, test_metrics)
@@ -137,7 +138,7 @@ def predict(model, params, Metrics, loss_fn, test_ds, callbacks, is_ensemble=Fal
         batch_pbar.update()
     batch_pbar.close()
     callbacks.on_train_end()
-
+    
 
 def eval_model(config_path, n_test=-1, log_file="eval.log", log_level="error"):
     """
@@ -169,6 +170,8 @@ def eval_model(config_path, n_test=-1, log_file="eval.log", log_level="error"):
     Metrics = initialize_metrics(config.metrics)
 
     atoms_list = load_test_data(config, model_version_path, eval_path, n_test)
+    #print("\nIN eval_model") #DEBUG
+    #print("\natoms_list[0].calc.results: \n",atoms_list[0].calc.results) #DEBUG
     test_ds = OTFInMemoryDataset(
         atoms_list,
         config.model.basis.r_max,
@@ -177,7 +180,7 @@ def eval_model(config_path, n_test=-1, log_file="eval.log", log_level="error"):
         pos_unit=config.data.pos_unit,
         energy_unit=config.data.energy_unit,
     )
-
+    #print("\ntest_ds: \n",test_ds) #DEBUG
     _, init_box = test_ds.init_input()
 
     if config.model.ensemble and config.model.ensemble.kind == "full":
@@ -194,7 +197,6 @@ def eval_model(config_path, n_test=-1, log_file="eval.log", log_level="error"):
 
     model = jax.vmap(model.apply, in_axes=(None, 0, 0, 0, 0, 0))
     config, params = restore_single_parameters(model_version_path)
-
     predict(
         model,
         params,

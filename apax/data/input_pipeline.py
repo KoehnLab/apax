@@ -93,6 +93,7 @@ class InMemoryDataset:
         pos_unit: str = "Ang",
         energy_unit: str = "eV",
         additional_properties: list[tuple] = [],
+        #additional_properties: list[tuple] = [("g_tensor",[3,3])],#Modified by FACUNDO #DEBUG
         pre_shuffle=False,
         shuffle_buffer_size=1000,
         ignore_labels=False,
@@ -105,7 +106,7 @@ class InMemoryDataset:
         self.batch_size = self.validate_batch_size(bs)
         self.pos_unit = pos_unit
         self.additional_properties = additional_properties
-
+        #print("\nIN InMemoryDataset__init__: \n")#DEBUG
         if pre_shuffle:
             shuffle(atoms_list)
         self.sample_atoms = atoms_list[0]
@@ -115,12 +116,14 @@ class InMemoryDataset:
         self.max_atoms = max_atoms
         self.max_nbrs = max_nbrs
         if atoms_list[0].calc and not ignore_labels:
+        #    print("\natoms_list: \n",atoms_list)#DEBUG
+        #    print("additional_properties: \n",additional_properties)#DEBUG
             self.labels = atoms_to_labels(
                 atoms_list, pos_unit, energy_unit, additional_properties
             )
         else:
             self.labels = None
-
+        #print("self.labels.keys(): \n",self.labels.keys()) #DEBUG
         self.count = 0
         self.buffer = deque()
         self.file = Path(cache_path) / str(uuid.uuid4())
@@ -641,7 +644,6 @@ class PerBatchPaddedDataset(InMemoryDataset):
             data_sharding = None
         ds = prefetch_to_single_device(iter(self), 2, data_sharding)
         return ds
-
     def make_signature(self) -> None:
         pass
 
